@@ -26,7 +26,7 @@
 * **Responsive Design:** Clean and mobile-friendly layout across all devices.
 
 ## 👥 Team:
-
+* **Organization:** [Politeknik Negeri Madiun](https://pnm.ac.id)
 * **Developer:** [Abid]([https://github.com/](https://github.com/AbidRafiul)) (Information Technology Student)
 
 ## 🛠 Technology Stack
