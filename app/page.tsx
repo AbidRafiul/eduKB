@@ -76,7 +76,7 @@ export default function Home() {
       <header id="home" className="relative h-[80vh] flex items-center justify-center text-center px-4 overflow-hidden">
         <div className="absolute inset-0 bg-teal-900/80 z-10"></div>
         <Image 
-          src="https://drive.google.com/uc?export=view&id=1nQ-QlUTEhMS0_ZQgukxoVpfuuHyp1krE" 
+          src="/jonathan-borba-DUrU_bZV8So-unsplash (1) (1) (1).webp" 
           alt="Keluarga Sehat" 
           fill
           className="object-cover"
