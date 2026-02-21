@@ -27,7 +27,7 @@
 
 ## 👥 Team:
 * **Organization:** [Politeknik Negeri Madiun](https://pnm.ac.id)
-* **Developer:** [Abid](https://github.com/AbidRafiul) (Information Technology Student)
+* **Developer:** [Abid Rafi'ul](https://github.com/AbidRafiul) (Information Technology Student)
 
 ## 🛠 Technology Stack
 
