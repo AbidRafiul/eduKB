@@ -4,12 +4,6 @@
   <strong>Family Planning Educational Platform</strong>
 </p>
 
-<p align="center">
-  <img src="https://img.shields.io/badge/license-MIT-green" alt="License">
-  <img src="https://img.shields.io/badge/last%20commit-february%202026-yellow" alt="Last Commit">
-  <img src="https://img.shields.io/badge/Stars-14-lightgrey" alt="Stars">
-</p>
-
 ---
 
 ## 📋 Table of Contents
@@ -33,8 +27,7 @@
 
 ## 👥 Team:
 
-* **Organization:** [Politeknik Negeri Madiun](https://pnm.ac.id)
-* **Developer:** [Abid](https://github.com/) (Information Technology Student)
+* **Developer:** [Abid]([https://github.com/](https://github.com/AbidRafiul)) (Information Technology Student)
 
 ## 🛠 Technology Stack
 
