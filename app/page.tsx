@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { 
   Menu, X, HeartPulse, Baby, TrendingUp, 
   ChevronDown, Activity 
@@ -24,6 +25,7 @@ export default function Home() {
 
   // Simple on-mount animation trigger
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsVisible(true);
   }, []);
 
@@ -73,10 +75,11 @@ export default function Home() {
       {/* Hero Section */}
       <header id="home" className="relative h-[80vh] flex items-center justify-center text-center px-4 overflow-hidden">
         <div className="absolute inset-0 bg-teal-900/80 z-10"></div>
-        <img 
-          src="https://drive.google.com/thumbnail?id=1nQ-QIUTEhMS0_ZQgukxoVpfuuHyp1krE&sz=w1920-h1080" 
+        <Image 
+          src="/hero.jpg" 
           alt="Keluarga Sehat" 
-          className="absolute inset-0 w-full h-full object-cover"
+          fill
+          className="object-cover"
         />
         <div className={`relative z-20 text-white max-w-2xl transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
           <h1 className="text-4xl md:text-6xl font-bold mb-6">Edukasi Keluarga Berencana</h1>

@@ -1,6 +1,6 @@
 // app/belajar/page.tsx
 import Link from "next/link";
-import { ArrowLeft, BookOpen, ShieldCheck, Clock } from "lucide-react";
+import { ArrowLeft, BookOpen, ShieldCheck } from "lucide-react";
 
 export default function BelajarPage() {
   return (
@@ -48,7 +48,7 @@ export default function BelajarPage() {
           </div>
           <p className="mb-4 text-slate-600">Alat kontrasepsi bekerja dengan salah satu (atau kombinasi) dari tiga mekanisme berikut:</p>
           <ul className="list-disc pl-6 space-y-3 text-slate-600 marker:text-teal-500">
-            <li><strong>Mencegah Pelepasan Sel Telur (Ovulasi):</strong> Hormon pada Pil, Suntik, dan Implan "menipu" tubuh agar tidak melepaskan sel telur setiap bulannya.</li>
+            <li><strong>Mencegah Pelepasan Sel Telur (Ovulasi):</strong> Hormon pada Pil, Suntik, dan Implan &quot;menipu&quot; tubuh agar tidak melepaskan sel telur setiap bulannya.</li>
             <li><strong>Menghalangi Pertemuan Sperma & Telur:</strong> Metode seperti Kondom membuat penghalang fisik, sementara IUD (Spiral) menciptakan lingkungan rahim yang tidak ramah bagi sperma.</li>
             <li><strong>Menebalkan Lendir Serviks:</strong> Hormon progestin membuat lendir di leher rahim menjadi sangat kental, sehingga sperma sulit berenang masuk ke dalam rahim.</li>
           </ul>
