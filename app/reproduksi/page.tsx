@@ -5,7 +5,10 @@ import { ArrowLeft, Activity, CalendarHeart } from "lucide-react";
 export default function ReproduksiPage() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 pb-20">
-      <div className="bg-teal-600 text-white pt-10 pb-20 px-4">
+      <div className="bg-teal-700 text-white pt-10 pb-24 px-4">
+        <div className="absolute top-0 right-0 opacity-10 transform translate-x-1/3 -translate-y-1/4">
+          <Activity size={300} />
+        </div>
         <div className="max-w-4xl mx-auto">
           <Link href="/" className="inline-flex items-center gap-2 text-teal-100 hover:text-white mb-8 transition">
             <ArrowLeft size={20} /> Kembali ke Beranda
@@ -27,6 +30,20 @@ export default function ReproduksiPage() {
           <div className="bg-teal-50 p-6 rounded-xl border border-teal-100 mb-8">
             <h3 className="font-bold text-teal-800 mb-2">KB Alami (Metode Kalender)</h3>
             <p className="text-slate-600 text-sm">Metode ini mengandalkan perhitungan masa subur untuk menghindari hubungan badan di waktu tersebut. Namun, tingkat kegagalannya cukup tinggi (kurang efektif) karena siklus wanita bisa bergeser akibat stres, kelelahan, atau hormon.</p>
+          </div>
+    <div className="flex items-center gap-4 mb-6 text-teal-700 mt-10">
+            <Activity size={32} />
+            <h2 className="text-2xl font-bold">Mengenali Tanda Fisik Masa Subur</h2>
+          </div>
+          <div className="grid md:grid-cols-2 gap-6 mb-8">
+            <div className="border border-slate-200 p-6 rounded-xl">
+              <h3 className="text-xl font-bold text-teal-700 mb-2">Perubahan Lendir Serviks</h3>
+              <p className="text-slate-600 text-sm">Menjelang ovulasi, tubuh akan memproduksi cairan vagina yang bening, licin, dan elastis (mirip putih telur mentah). Ini berfungsi membantu sperma berenang menuju sel telur.</p>
+            </div>
+            <div className="border border-slate-200 p-6 rounded-xl">
+              <h3 className="text-xl font-bold text-teal-700 mb-2">Suhu Basal Tubuh Naik</h3>
+              <p className="text-slate-600 text-sm">Suhu tubuh saat baru bangun tidur (sebelum beraktivitas) akan sedikit meningkat sekitar 0.3 - 0.5 derajat Celcius tepat setelah sel telur dilepaskan.</p>
+            </div>
           </div>
 
           <div className="flex items-center gap-4 mb-6 text-teal-700 mt-10">
