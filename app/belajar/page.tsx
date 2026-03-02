@@ -6,7 +6,10 @@ export default function BelajarPage() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 pb-20">
       {/* Header */}
-      <div className="bg-teal-700 text-white pt-10 pb-20 px-4">
+      <div className="bg-teal-700 text-white pt-10 pb-20 px-4 ">\
+        <div className="absolute top-0 right-0 opacity-10 transform translate-x-1/3 -translate-y-1/4">
+          <BookOpen size={300} />
+        </div>
         <div className="max-w-4xl mx-auto">
           <Link href="/" className="inline-flex items-center gap-2 text-teal-100 hover:text-white mb-8 transition">
             <ArrowLeft size={20} /> Kembali ke Beranda

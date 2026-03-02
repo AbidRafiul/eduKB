@@ -23,9 +23,7 @@ export default function Home() {
   const [openAccordion, setOpenAccordion] = useState<number | null>(null);
   const [isVisible, setIsVisible] = useState(false);
 
-  // Simple on-mount animation trigger
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsVisible(true);
   }, []);
 
@@ -40,19 +38,55 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 font-sans scroll-smooth">
       
-      {/* Navigation */}
+{/* Navigation */}
       <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm">
         <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-2 text-2xl font-bold text-teal-700">
+          
+          {/* Logo yang bisa diklik untuk pulang ke Beranda */}
+          <Link href="/" className="flex items-center gap-2 text-2xl font-bold text-teal-700 hover:text-teal-600 transition">
             <Activity className="text-teal-500" /> Edu<span className="text-teal-500">KB</span>
-          </div>
+          </Link>
           
           {/* Desktop Menu */}
-          <ul className="hidden md:flex gap-8 font-medium">
-            <li><a href="#home" className="hover:text-teal-600 transition">Beranda</a></li>
-            <li><a href="#edukasi" className="hover:text-teal-600 transition">Edukasi</a></li>
-            <li><a href="#metode" className="hover:text-teal-600 transition">Metode KB</a></li>
-            <li><a href="#mitos" className="hover:text-teal-600 transition">Mitos & Fakta</a></li>
+          <ul className="hidden md:flex items-center gap-8 font-medium text-slate-700">
+            <li><Link href="/belajar" className="hover:text-teal-600 transition">Fase KB</Link></li>
+            
+            {/* Dropdown Materi Edukasi */}
+            <li className="relative group">
+              <button className="flex items-center gap-1 hover:text-teal-600 transition py-2">
+                Materi Edukasi 
+                <ChevronDown size={18} className="group-hover:rotate-180 transition-transform duration-300 text-slate-500" />
+              </button>
+              
+              <div className="absolute left-0 hidden w-64 pt-3 bg-white rounded-xl shadow-xl group-hover:block z-50 border border-slate-100">
+                <ul className="py-2 text-sm text-slate-700 flex flex-col">
+                  <li>
+                    <Link href="/reproduksi" className="block px-5 py-3 hover:bg-teal-50 hover:text-teal-700 transition">
+                      Kesehatan Reproduksi & Masa Subur
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/peran-pasangan" className="block px-5 py-3 hover:bg-teal-50 hover:text-teal-700 transition">
+                      Peran Suami dalam KB
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            </li>
+
+            {/* Link Kalkulator Cerdas */}
+            <li>
+              <Link href="/rekomendasi" className="hover:text-teal-500 transition">
+                Kalkulator KB
+              </Link>
+            </li>
+
+            {/* Link Tentang Kami */}
+            <li>
+              <Link href="/tentang" className="hover:text-teal-600 transition">
+                Tentang Kami
+              </Link>
+            </li>
           </ul>
 
           {/* Mobile Menu Button */}
@@ -63,17 +97,41 @@ export default function Home() {
 
         {/* Mobile Dropdown */}
         {isMenuOpen && (
-          <ul className="md:hidden bg-white px-4 py-4 flex flex-col gap-4 text-center shadow-lg border-t">
-            <li><a href="#home" onClick={() => setIsMenuOpen(false)}>Beranda</a></li>
-            <li><a href="#edukasi" onClick={() => setIsMenuOpen(false)}>Edukasi</a></li>
-            <li><a href="#metode" onClick={() => setIsMenuOpen(false)}>Metode KB</a></li>
-            <li><a href="#mitos" onClick={() => setIsMenuOpen(false)}>Mitos & Fakta</a></li>
+          <ul className="md:hidden bg-white px-4 py-6 flex flex-col gap-5 text-center shadow-lg border-t text-slate-700 font-medium z-50 absolute w-full left-0">
+            <li><Link href="/belajar" onClick={() => setIsMenuOpen(false)} className="hover:text-teal-600">Fase KB</Link></li>
+            <li>
+              <Link href="/rekomendasi" onClick={() => setIsMenuOpen(false)} className="hover:text-teal-500">
+                Kalkulator KB Cerdas
+              </Link>
+            </li>
+            <li>
+              <Link href="/tentang" onClick={() => setIsMenuOpen(false)} className="hover:text-teal-600">
+                Tentang Kami
+              </Link>
+            </li>
+            
+            {/* Pemisah Materi Edukasi Mobile */}
+            <li className="border-t border-slate-100 pt-4 mt-2">
+              <span className="block text-teal-800 font-bold mb-4">Materi Edukasi</span>
+              <ul className="flex flex-col gap-4 text-sm font-normal">
+                <li>
+                  <Link href="/reproduksi" onClick={() => setIsMenuOpen(false)} className="hover:text-teal-600">
+                    Kesehatan Reproduksi & Masa Subur
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/peran-pasangan" onClick={() => setIsMenuOpen(false)} className="hover:text-teal-600">
+                    Peran Suami dalam KB
+                  </Link>
+                </li>
+              </ul>
+            </li>
           </ul>
         )}
       </nav>
 
       {/* Hero Section */}
-      <header id="home" className="relative h-[80vh] flex items-center justify-center text-center px-4 overflow-hidden">
+      <header className="relative h-[80vh] flex items-center justify-center text-center px-4 overflow-hidden">
         <div className="absolute inset-0 bg-teal-900/80 z-10"></div>
         <Image 
           src="/hero.webp" 
@@ -84,14 +142,19 @@ export default function Home() {
         <div className={`relative z-20 text-white max-w-2xl transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
           <h1 className="text-4xl md:text-6xl font-bold mb-6">Edukasi Keluarga Berencana</h1>
           <p className="text-lg md:text-xl mb-8 opacity-90">Rencanakan keluarga sehat untuk masa depan yang lebih cerah secara terukur dan medis.</p>
-          <a href="/belajar" className="bg-teal-500 hover:bg-teal-400 text-white px-8 py-3 rounded-full font-semibold transition-all shadow-lg hover:shadow-xl">
-          Mulai Belajar
-          </a>
+          <div className="flex flex-wrap gap-4 justify-center">
+            <Link href="/belajar" className="bg-teal-500 hover:bg-teal-400 text-white px-8 py-3 rounded-full font-semibold transition-all shadow-lg hover:shadow-xl">
+              Mulai Belajar
+            </Link>
+            <Link href="/rekomendasi" className="bg-white/20 hover:bg-white text-white hover:text-teal-700 px-8 py-3 rounded-full font-semibold transition-all shadow-lg hover:shadow-xl border border-white">
+              Kalkulator KB Cerdas
+            </Link>
+          </div>
         </div>
       </header>
 
       {/* Edukasi Section */}
-      <section id="edukasi" className="max-w-6xl mx-auto px-4 py-20">
+      <section className="max-w-6xl mx-auto px-4 py-20">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl font-bold text-teal-700 mb-6">Apa Itu Keluarga Berencana?</h2>
           <p className="text-lg leading-relaxed text-slate-600">
@@ -115,7 +178,7 @@ export default function Home() {
       </section>
 
       {/* Filter / Kuis Section */}
-      <section id="metode" className="bg-slate-100 py-20">
+      <section className="bg-slate-100 py-20">
         <div className="max-w-6xl mx-auto px-4">
           <h2 className="text-3xl font-bold text-teal-700 text-center mb-10">Pilih KB yang Tepat</h2>
           
@@ -154,7 +217,7 @@ export default function Home() {
       </section>
 
       {/* Mitos vs Fakta */}
-      <section id="mitos" className="max-w-3xl mx-auto px-4 py-20">
+      <section className="max-w-3xl mx-auto px-4 py-20">
         <h2 className="text-3xl font-bold text-teal-700 text-center mb-10">Mitos vs Fakta</h2>
         <div className="space-y-4">
           {[
@@ -180,20 +243,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Tautan Artikel Relevan */}
-      <section className="max-w-6xl mx-auto px-4 py-10 border-t border-slate-200 text-center">
-        <h3 className="text-xl font-bold text-teal-700 mb-6">Pelajari Materi Relevan Lainnya:</h3>
-        <div className="flex flex-wrap justify-center gap-4">
-          <Link href="/reproduksi" className="px-6 py-2 bg-slate-100 text-teal-700 rounded-full hover:bg-teal-100 transition font-medium">
-            Kesehatan Reproduksi & Masa Subur
-          </Link>
-          <Link href="/peran-pasangan" className="px-6 py-2 bg-slate-100 text-teal-700 rounded-full hover:bg-teal-100 transition font-medium">
-            Peran Suami dalam KB
-          </Link>
-        </div>
-      </section>
-
-      <footer className="bg-slate-900 text-slate-400 py-8 text-center">
+      <footer className="bg-slate-900 text-slate-400 py-8 text-center mt-10">
         <p>&copy; 2026 EduKB - Platform Edukasi Kesehatan Reproduksi</p>
       </footer>
     </div>
