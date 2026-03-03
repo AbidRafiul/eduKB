@@ -3,9 +3,16 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { 
-  Menu, X, HeartPulse, Baby, TrendingUp, 
-  ChevronDown, Activity 
+import {
+  Menu,
+  X,
+  HeartPulse,
+  Baby,
+  TrendingUp,
+  ChevronDown,
+  Activity,
+  MapPin,
+  Bell
 } from "lucide-react";
 
 const dataKB = [
@@ -17,14 +24,59 @@ const dataKB = [
   { id: 6, nama: "Kondom", tipe: "Penghalang", deskripsi: "Satu-satunya metode yang melindungi dari Infeksi Menular Seksual (IMS).", kategori: "umum" }
 ];
 
+type KbReminderData = {
+  metode: string;
+  jenis: string;
+  nextVisit: string; // ISO string
+};
+
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [filter, setFilter] = useState("semua");
   const [openAccordion, setOpenAccordion] = useState<number | null>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [kbReminder, setKbReminder] = useState<KbReminderData | null>(null);
+  const [daysRemaining, setDaysRemaining] = useState<number | null>(null);
+  const [isLocating, setIsLocating] = useState(false);
 
   useEffect(() => {
     setIsVisible(true);
+
+    // Ambil data pengingat KB dari localStorage (jika ada)
+    try {
+      if (typeof window === "undefined") return;
+      const raw = localStorage.getItem("edukbKbReminder");
+      if (!raw) return;
+
+      const parsed: KbReminderData = JSON.parse(raw);
+      if (!parsed.nextVisit) return;
+
+      const today = new Date();
+      const next = new Date(parsed.nextVisit);
+
+      // Normalisasi ke tengah malam untuk hitung hari
+      const todayMid = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate()
+      );
+      const nextMid = new Date(
+        next.getFullYear(),
+        next.getMonth(),
+        next.getDate()
+      );
+
+      const diffMs = nextMid.getTime() - todayMid.getTime();
+      const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+
+      // Tampilkan banner jika jadwal masih ke depan (maks 120 hari)
+      if (diffDays >= 0 && diffDays <= 120) {
+        setKbReminder(parsed);
+        setDaysRemaining(diffDays);
+      }
+    } catch {
+      // Abaikan error parsing
+    }
   }, []);
 
   const filteredKB = filter === "semua" 
@@ -35,14 +87,52 @@ export default function Home() {
     setOpenAccordion(openAccordion === index ? null : index);
   };
 
+  const formatIndoDate = (dateStr: string) => {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString("id-ID", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
+  const handleFindMidwife = () => {
+    if (typeof window === "undefined") return;
+
+    if (!("geolocation" in navigator)) {
+      alert(
+        "Browser Anda belum mendukung fitur lokasi otomatis. Anda bisa mencari 'Bidan Praktek Mandiri terdekat' langsung di Google Maps."
+      );
+      return;
+    }
+
+    setIsLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        const query = encodeURIComponent("Bidan Praktek Mandiri Terdekat");
+        const url = `https://www.google.com/maps/search/${query}/@${latitude},${longitude},15z`;
+        window.open(url, "_blank");
+        setIsLocating(false);
+      },
+      () => {
+        alert(
+          "Gagal mengakses lokasi. Pastikan izin lokasi diaktifkan di browser Anda."
+        );
+        setIsLocating(false);
+      }
+    );
+  };
+
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 font-sans scroll-smooth">
+    <div className="min-h-screen bg-slate-50 text-slate-800 font-sans scroll-smooth overflow-x-hidden">
       
 {/* Navigation */}
       <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm">
         <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
           
-          {/* Logo yang bisa diklik untuk pulang ke Beranda */}
+          {/* Logo */}
           <Link href="/" className="flex items-center gap-2 text-2xl font-bold text-teal-700 hover:text-teal-600 transition">
             <Activity className="text-teal-500" /> Edu<span className="text-teal-500">KB</span>
           </Link>
@@ -74,10 +164,19 @@ export default function Home() {
               </div>
             </li>
 
-            {/* Link Kalkulator Cerdas */}
             <li>
               <Link href="/rekomendasi" className="hover:text-teal-500 transition">
                 Kalkulator KB
+              </Link>
+            </li>
+            <li>
+              <Link href="/ovulasi" className="hover:text-teal-600 transition">
+                Kalkulator Masa Subur
+              </Link>
+            </li>
+            <li>
+              <Link href="/pengingat-kb" className="hover:text-teal-600 transition">
+                Pengingat Kontrol KB
               </Link>
             </li>
 
@@ -98,10 +197,24 @@ export default function Home() {
         {/* Mobile Dropdown */}
         {isMenuOpen && (
           <ul className="md:hidden bg-white px-4 py-6 flex flex-col gap-5 text-center shadow-lg border-t text-slate-700 font-medium z-50 absolute w-full left-0">
-            <li><Link href="/belajar" onClick={() => setIsMenuOpen(false)} className="hover:text-teal-600">Fase KB</Link></li>
+            <li>
+              <Link href="/belajar" onClick={() => setIsMenuOpen(false)} className="hover:text-teal-600">
+                Fase KB
+              </Link>
+            </li>
             <li>
               <Link href="/rekomendasi" onClick={() => setIsMenuOpen(false)} className="hover:text-teal-500">
                 Kalkulator KB Cerdas
+              </Link>
+            </li>
+            <li>
+              <Link href="/ovulasi" onClick={() => setIsMenuOpen(false)} className="hover:text-teal-600">
+                Kalkulator Masa Subur
+              </Link>
+            </li>
+            <li>
+              <Link href="/pengingat-kb" onClick={() => setIsMenuOpen(false)} className="hover:text-teal-600">
+                Pengingat Kontrol KB
               </Link>
             </li>
             <li>
@@ -130,9 +243,43 @@ export default function Home() {
         )}
       </nav>
 
+      {/* Banner Pengingat Kontrol KB */}
+      {kbReminder && daysRemaining !== null && (
+        <div className="bg-amber-50/95 backdrop-blur-sm border-b border-amber-200/60 shadow-sm relative z-40">
+          <div className="max-w-6xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-sm md:text-base">
+            
+            <div className="flex items-start sm:items-center gap-3">
+              <div className="bg-amber-100 p-2 rounded-full shrink-0 text-amber-600">
+                <Bell size={20} className="animate-pulse" />
+              </div>
+              <div>
+                <p className="text-slate-700">
+                  Jadwal <strong className="text-amber-800">{kbReminder.metode}</strong> Anda selanjutnya adalah{" "}
+                  {daysRemaining === 0 ? (
+                    <strong className="text-red-600 bg-red-50 px-2 py-0.5 rounded">HARI INI</strong>
+                  ) : (
+                    <strong className="text-amber-800">{daysRemaining} hari lagi</strong>
+                  )}
+                  {" "}pada tanggal <strong className="text-slate-800">{formatIndoDate(kbReminder.nextVisit)}</strong>.
+                </p>
+              </div>
+            </div>
+
+            <Link
+              href="/pengingat-kb"
+              className="shrink-0 bg-white hover:bg-amber-100 text-amber-700 border border-amber-200 px-4 py-1.5 rounded-full font-semibold transition-all shadow-sm text-sm"
+            >
+              Atur Ulang
+            </Link>
+            
+          </div>
+        </div>
+      )}
+
       {/* Hero Section */}
       <header className="relative h-[80vh] flex items-center justify-center text-center px-4 overflow-hidden">
         <div className="absolute inset-0 bg-teal-900/80 z-10"></div>
+        {/* Hapus fallback di sini jika hero.webp selalu ada, atau pastikan public/hero.webp ada */}
         <Image 
           src="/hero.webp" 
           alt="Keluarga Sehat" 
@@ -243,8 +390,26 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="bg-slate-900 text-slate-400 py-8 text-center mt-10">
-        <p>&copy; 2026 EduKB - Platform Edukasi Kesehatan Reproduksi</p>
+      <footer className="bg-slate-900 text-slate-400 py-8 mt-10">
+        <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="text-center md:text-left text-sm leading-relaxed">
+            <p className="font-semibold text-slate-300">© 2026 EduKB - Platform Edukasi Keluarga Berencana</p>
+            <p className="text-slate-500 mt-1">
+              Luaran Mata Kuliah Teknologi Tepat Guna Kebidanan <br className="md:hidden" />
+              <span className="hidden md:inline"> | </span> Poltekkes Kemenkes Surabaya
+            </p>
+          </div>
+          <button
+            onClick={handleFindMidwife}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500 hover:bg-teal-400 text-white text-sm font-semibold shadow-lg transition-all disabled:opacity-70"
+            disabled={isLocating}
+          >
+            <MapPin size={18} />
+            {isLocating
+              ? "Mencari lokasi bidan terdekat..."
+              : "Cari Bidan Terdekat"}
+          </button>
+        </div>
       </footer>
     </div>
   );

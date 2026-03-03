@@ -1,25 +1,29 @@
-// app/peran-pasangan/page.tsx
 import Link from "next/link";
 import { ArrowLeft, Users, HeartHandshake } from "lucide-react";
 
 export default function PeranPasanganPage() {
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 pb-20">
-      <div className="bg-teal-700 text-white pt-10 pb-24 px-4">
-        <div className="absolute top-0 right-0 opacity-10 transform translate-x-1/3 -translate-y-1/4">
-          <HeartHandshake size={300} />
+    <div className="min-h-screen bg-slate-50 text-slate-800 pb-20 overflow-x-hidden font-sans">
+      
+      <div className="bg-teal-700 text-white pt-10 pb-24 px-4 relative">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-0 right-0 opacity-10 transform translate-x-1/3 -translate-y-1/4">
+            <HeartHandshake size={300} />
+          </div>
         </div>
-        <div className="max-w-4xl mx-auto">
-          <Link href="/" className="inline-flex items-center gap-2 text-slate-300 hover:text-white mb-8 transition">
+
+        <div className="max-w-4xl mx-auto relative z-10">
+          <Link href="/" className="inline-flex items-center gap-2 text-teal-100 hover:text-white mb-8 transition">
             <ArrowLeft size={20} /> Kembali ke Beranda
           </Link>
           <h1 className="text-4xl font-bold mb-4">KB Bukan Hanya Tugas Istri</h1>
-          <p className="text-lg text-slate-300">Peran aktif suami (pasangan) sangat krusial dalam kesuksesan Keluarga Berencana.</p>
+          <p className="text-lg text-teal-100">Peran aktif suami (pasangan) sangat krusial dalam kesuksesan Keluarga Berencana.</p>
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 -mt-10">
-        <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12 mb-8">
+      <div className="max-w-4xl mx-auto px-4 -mt-10 relative z-20 space-y-8">
+        
+        <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12 border border-slate-100">
           <div className="flex items-center gap-4 mb-6 text-slate-700">
             <Users size={32} className="text-teal-600" />
             <h2 className="text-2xl font-bold">Keterlibatan Pria dalam KB</h2>
@@ -41,7 +45,12 @@ export default function PeranPasanganPage() {
         <div className="bg-teal-50 rounded-2xl p-8 md:p-12 border border-teal-100 text-center">
           <HeartHandshake size={48} className="mx-auto text-teal-600 mb-4" />
           <h2 className="text-2xl font-bold text-teal-800 mb-4">Dukungan Emosional Suami</h2>
-          <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12 mt-8">
+          <p className="text-slate-600 max-w-2xl mx-auto">
+            Jika istri yang menggunakan KB (seperti Pil atau Suntik/IUD), dukungan suami sangat dibutuhkan. Misalnya, mengingatkan jadwal minum pil, menemani ke fasilitas kesehatan, dan memahami jika ada perubahan *mood* akibat adaptasi hormon. Keputusan memilih jenis KB harus selalu menjadi <strong>keputusan bersama</strong>.
+          </p>
+        </div>
+
+        <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12 border border-slate-100">
           <h2 className="text-2xl font-bold text-slate-800 mb-6 border-b pb-4">Tanggung Jawab Bersama</h2>
           <ul className="space-y-4 text-slate-600">
             <li className="flex gap-3">
@@ -54,10 +63,7 @@ export default function PeranPasanganPage() {
             </li>
           </ul>
         </div>
-          <p className="text-slate-600 max-w-2xl mx-auto">
-            Jika istri yang menggunakan KB (seperti Pil atau Suntik/IUD), dukungan suami sangat dibutuhkan. Misalnya, mengingatkan jadwal minum pil, menemani ke fasilitas kesehatan, dan memahami jika ada perubahan *mood* akibat adaptasi hormon. Keputusan memilih jenis KB harus selalu menjadi <strong>keputusan bersama</strong>.
-          </p>
-        </div>
+
       </div>
     </div>
   );
