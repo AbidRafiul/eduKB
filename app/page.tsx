@@ -128,7 +128,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 font-sans scroll-smooth overflow-x-hidden">
       
-      {/* Navigation */}
+{/* Navigation */}
       <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm">
         <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
           
