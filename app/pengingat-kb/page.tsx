@@ -105,17 +105,13 @@ export default function PengingatKBPage() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 pb-20 font-sans overflow-x-hidden">
       
-      {/* Header - Bebas overflow-hidden agar kotak form bisa menimpa rapi */}
       <div className="bg-teal-700 text-white pt-10 pb-20 px-4 relative">
-        
-        {/* Kandang gaib untuk ikon agar tidak tumpah ke kanan layar */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-0 right-0 opacity-10 transform translate-x-1/3 -translate-y-1/4">
             <Activity size={260} />
           </div>
         </div>
 
-        {/* Konten Header (z-10) */}
         <div className="max-w-4xl mx-auto relative z-10">
           <Link
             href="/"
@@ -136,7 +132,6 @@ export default function PengingatKBPage() {
         </div>
       </div>
 
-      {/* Konten Utama (z-20) */}
       <div className="max-w-4xl mx-auto px-4 -mt-10 relative z-20">
         <div className="bg-white rounded-2xl shadow-lg p-6 md:p-10 border border-slate-100 space-y-8">
           <form
@@ -280,7 +275,7 @@ export default function PengingatKBPage() {
                   </p>
                 </div>
               ) : (
-                <div className="h-full min-h-50 flex items-center justify-center text-center text-sm text-slate-500 bg-white rounded-xl border border-slate-200">
+                <div className="h-full min-h-[200px] flex items-center justify-center text-center text-sm text-slate-500 bg-white rounded-xl border border-slate-200">
                   <div className="px-4">
                     Belum ada jadwal tersimpan.<br/><br/>Isi formulir di sebelah kiri, lalu tekan tombol <span className="font-semibold text-teal-600">Simpan Pengingat</span>.
                   </div>

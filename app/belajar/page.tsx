@@ -1,13 +1,21 @@
-// app/belajar/page.tsx
 import Link from "next/link";
 import { ArrowLeft, BookOpen, ShieldCheck } from "lucide-react";
 
 export default function BelajarPage() {
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 pb-20">
+    <div className="min-h-screen bg-slate-50 text-slate-800 pb-20 font-sans overflow-x-hidden">
       {/* Header */}
-      <div className="bg-teal-700 text-white pt-10 pb-20 px-4">
-        <div className="max-w-4xl mx-auto">
+      <div className="bg-teal-700 text-white pt-10 pb-20 px-4 relative">
+        
+        {/* Kandang khusus Ikon agar tidak tumpah */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-0 right-0 opacity-10 transform translate-x-1/3 -translate-y-1/4">
+            <BookOpen size={300} />
+          </div>
+        </div>
+
+        {/* Teks Header - Harus layer 10 (z-10) */}
+        <div className="max-w-4xl mx-auto relative z-10">
           <Link href="/" className="inline-flex items-center gap-2 text-teal-100 hover:text-white mb-8 transition">
             <ArrowLeft size={20} /> Kembali ke Beranda
           </Link>
@@ -16,9 +24,10 @@ export default function BelajarPage() {
         </div>
       </div>
 
-      {/* Konten Utama */}
-      <div className="max-w-4xl mx-auto px-4 -mt-10">
-        <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12 mb-8">
+      {/* Konten Utama - Harus layer 20 (z-20) agar menimpa header */}
+      <div className="max-w-4xl mx-auto px-4 -mt-10 relative z-20">
+        
+        <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12 mb-8 border border-slate-100">
           <div className="flex items-center gap-4 mb-6 text-teal-700">
             <BookOpen size={32} />
             <h2 className="text-2xl font-bold">3 Fase Perencanaan Keluarga (KB)</h2>
@@ -41,7 +50,7 @@ export default function BelajarPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12">
+        <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12 border border-slate-100">
           <div className="flex items-center gap-4 mb-6 text-teal-700">
             <ShieldCheck size={32} />
             <h2 className="text-2xl font-bold">Bagaimana Kontrasepsi Bekerja?</h2>

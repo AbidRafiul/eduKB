@@ -32,7 +32,6 @@ export default function OvulasiPage() {
     const panjangSiklus = Math.max(21, Math.min(35, Number(siklus) || 28));
     const hphtDate = new Date(hpht);
 
-    // Asumsi ovulasi = 14 hari sebelum haid berikutnya
     const ovulationOffset = panjangSiklus - 14;
     const ovulationDate = new Date(hphtDate);
     ovulationDate.setDate(hphtDate.getDate() + ovulationOffset - 1);
@@ -52,17 +51,13 @@ export default function OvulasiPage() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 pb-20 font-sans overflow-x-hidden">
       
-      {/* Header - Ditambahkan relative agar bisa menampung absolute child */}
       <div className="bg-teal-700 text-white pt-10 pb-20 px-4 relative">
-        
-        {/* Kandang gaib untuk ikon agar tidak tumpah */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-0 right-0 opacity-10 transform translate-x-1/3 -translate-y-1/4">
             <Activity size={260} />
           </div>
         </div>
         
-        {/* Konten Header (z-10) */}
         <div className="max-w-4xl mx-auto relative z-10">
           <Link
             href="/"
@@ -83,7 +78,6 @@ export default function OvulasiPage() {
         </div>
       </div>
 
-      {/* Konten Utama (z-20) agar menimpa header dengan rapi */}
       <div className="max-w-4xl mx-auto px-4 -mt-10 relative z-20">
         <div className="bg-white rounded-2xl shadow-lg p-6 md:p-10 border border-slate-100">
           <form
@@ -183,7 +177,7 @@ export default function OvulasiPage() {
                   </p>
                 </div>
               ) : (
-                <div className="h-full min-h-50 flex items-center justify-center text-center text-sm text-slate-500">
+                <div className="h-full min-h-[200px] flex items-center justify-center text-center text-sm text-slate-500">
                   Masukkan HPHT dan panjang siklus untuk melihat perkiraan masa
                   subur Anda di sini.
                 </div>

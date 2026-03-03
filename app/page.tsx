@@ -3,9 +3,16 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { 
-  Menu, X, HeartPulse, Baby, TrendingUp, 
-  ChevronDown, Activity 
+import {
+  Menu,
+  X,
+  HeartPulse,
+  Baby,
+  TrendingUp,
+  ChevronDown,
+  Activity,
+  MapPin,
+  Bell
 } from "lucide-react";
 
 const dataKB = [
@@ -17,16 +24,59 @@ const dataKB = [
   { id: 6, nama: "Kondom", tipe: "Penghalang", deskripsi: "Satu-satunya metode yang melindungi dari Infeksi Menular Seksual (IMS).", kategori: "umum" }
 ];
 
+type KbReminderData = {
+  metode: string;
+  jenis: string;
+  nextVisit: string; // ISO string
+};
+
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [filter, setFilter] = useState("semua");
   const [openAccordion, setOpenAccordion] = useState<number | null>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [kbReminder, setKbReminder] = useState<KbReminderData | null>(null);
+  const [daysRemaining, setDaysRemaining] = useState<number | null>(null);
+  const [isLocating, setIsLocating] = useState(false);
 
-  // Simple on-mount animation trigger
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsVisible(true);
+
+    // Ambil data pengingat KB dari localStorage (jika ada)
+    try {
+      if (typeof window === "undefined") return;
+      const raw = localStorage.getItem("edukbKbReminder");
+      if (!raw) return;
+
+      const parsed: KbReminderData = JSON.parse(raw);
+      if (!parsed.nextVisit) return;
+
+      const today = new Date();
+      const next = new Date(parsed.nextVisit);
+
+      // Normalisasi ke tengah malam untuk hitung hari
+      const todayMid = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate()
+      );
+      const nextMid = new Date(
+        next.getFullYear(),
+        next.getMonth(),
+        next.getDate()
+      );
+
+      const diffMs = nextMid.getTime() - todayMid.getTime();
+      const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+
+      // Tampilkan banner jika jadwal masih ke depan (maks 120 hari)
+      if (diffDays >= 0 && diffDays <= 120) {
+        setKbReminder(parsed);
+        setDaysRemaining(diffDays);
+      }
+    } catch {
+      // Abaikan error parsing
+    }
   }, []);
 
   const filteredKB = filter === "semua" 
@@ -37,22 +87,105 @@ export default function Home() {
     setOpenAccordion(openAccordion === index ? null : index);
   };
 
+  const formatIndoDate = (dateStr: string) => {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString("id-ID", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
+  const handleFindMidwife = () => {
+    if (typeof window === "undefined") return;
+
+    if (!("geolocation" in navigator)) {
+      alert(
+        "Browser Anda belum mendukung fitur lokasi otomatis. Anda bisa mencari 'Bidan Praktek Mandiri terdekat' langsung di Google Maps."
+      );
+      return;
+    }
+
+    setIsLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        const query = encodeURIComponent("Bidan Praktek Mandiri Terdekat");
+        const url = `https://www.google.com/maps/search/${query}/@${latitude},${longitude},15z`;
+        window.open(url, "_blank");
+        setIsLocating(false);
+      },
+      () => {
+        alert(
+          "Gagal mengakses lokasi. Pastikan izin lokasi diaktifkan di browser Anda."
+        );
+        setIsLocating(false);
+      }
+    );
+  };
+
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 font-sans scroll-smooth">
+    <div className="min-h-screen bg-slate-50 text-slate-800 font-sans scroll-smooth overflow-x-hidden">
       
       {/* Navigation */}
       <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm">
         <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-2 text-2xl font-bold text-teal-700">
+          
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2 text-2xl font-bold text-teal-700 hover:text-teal-600 transition">
             <Activity className="text-teal-500" /> Edu<span className="text-teal-500">KB</span>
-          </div>
+          </Link>
           
           {/* Desktop Menu */}
-          <ul className="hidden md:flex gap-8 font-medium">
-            <li><a href="#home" className="hover:text-teal-600 transition">Beranda</a></li>
-            <li><a href="#edukasi" className="hover:text-teal-600 transition">Edukasi</a></li>
-            <li><a href="#metode" className="hover:text-teal-600 transition">Metode KB</a></li>
-            <li><a href="#mitos" className="hover:text-teal-600 transition">Mitos & Fakta</a></li>
+          <ul className="hidden md:flex items-center gap-8 font-medium text-slate-700">
+            <li><Link href="/belajar" className="hover:text-teal-600 transition">Fase KB</Link></li>
+            
+            {/* Dropdown Materi Edukasi */}
+            <li className="relative group">
+              <button className="flex items-center gap-1 hover:text-teal-600 transition py-2">
+                Materi Edukasi 
+                <ChevronDown size={18} className="group-hover:rotate-180 transition-transform duration-300 text-slate-500" />
+              </button>
+              
+              <div className="absolute left-0 hidden w-64 pt-3 bg-white rounded-xl shadow-xl group-hover:block z-50 border border-slate-100">
+                <ul className="py-2 text-sm text-slate-700 flex flex-col">
+                  <li>
+                    <Link href="/reproduksi" className="block px-5 py-3 hover:bg-teal-50 hover:text-teal-700 transition">
+                      Kesehatan Reproduksi & Masa Subur
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/peran-pasangan" className="block px-5 py-3 hover:bg-teal-50 hover:text-teal-700 transition">
+                      Peran Suami dalam KB
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            </li>
+
+            <li>
+              <Link href="/rekomendasi" className="hover:text-teal-500 transition">
+                Kalkulator KB
+              </Link>
+            </li>
+            <li>
+              <Link href="/ovulasi" className="hover:text-teal-600 transition">
+                Kalkulator Masa Subur
+              </Link>
+            </li>
+            <li>
+              <Link href="/pengingat-kb" className="hover:text-teal-600 transition">
+                Pengingat Kontrol KB
+              </Link>
+            </li>
+
+            {/* Link Tentang Kami */}
+            <li>
+              <Link href="/tentang" className="hover:text-teal-600 transition">
+                Tentang Kami
+              </Link>
+            </li>
           </ul>
 
           {/* Mobile Menu Button */}
@@ -63,18 +196,90 @@ export default function Home() {
 
         {/* Mobile Dropdown */}
         {isMenuOpen && (
-          <ul className="md:hidden bg-white px-4 py-4 flex flex-col gap-4 text-center shadow-lg border-t">
-            <li><a href="#home" onClick={() => setIsMenuOpen(false)}>Beranda</a></li>
-            <li><a href="#edukasi" onClick={() => setIsMenuOpen(false)}>Edukasi</a></li>
-            <li><a href="#metode" onClick={() => setIsMenuOpen(false)}>Metode KB</a></li>
-            <li><a href="#mitos" onClick={() => setIsMenuOpen(false)}>Mitos & Fakta</a></li>
+          <ul className="md:hidden bg-white px-4 py-6 flex flex-col gap-5 text-center shadow-lg border-t text-slate-700 font-medium z-50 absolute w-full left-0">
+            <li>
+              <Link href="/belajar" onClick={() => setIsMenuOpen(false)} className="hover:text-teal-600">
+                Fase KB
+              </Link>
+            </li>
+            <li>
+              <Link href="/rekomendasi" onClick={() => setIsMenuOpen(false)} className="hover:text-teal-500">
+                Kalkulator KB Cerdas
+              </Link>
+            </li>
+            <li>
+              <Link href="/ovulasi" onClick={() => setIsMenuOpen(false)} className="hover:text-teal-600">
+                Kalkulator Masa Subur
+              </Link>
+            </li>
+            <li>
+              <Link href="/pengingat-kb" onClick={() => setIsMenuOpen(false)} className="hover:text-teal-600">
+                Pengingat Kontrol KB
+              </Link>
+            </li>
+            <li>
+              <Link href="/tentang" onClick={() => setIsMenuOpen(false)} className="hover:text-teal-600">
+                Tentang Kami
+              </Link>
+            </li>
+            
+            {/* Pemisah Materi Edukasi Mobile */}
+            <li className="border-t border-slate-100 pt-4 mt-2">
+              <span className="block text-teal-800 font-bold mb-4">Materi Edukasi</span>
+              <ul className="flex flex-col gap-4 text-sm font-normal">
+                <li>
+                  <Link href="/reproduksi" onClick={() => setIsMenuOpen(false)} className="hover:text-teal-600">
+                    Kesehatan Reproduksi & Masa Subur
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/peran-pasangan" onClick={() => setIsMenuOpen(false)} className="hover:text-teal-600">
+                    Peran Suami dalam KB
+                  </Link>
+                </li>
+              </ul>
+            </li>
           </ul>
         )}
       </nav>
 
+      {/* Banner Pengingat Kontrol KB */}
+      {kbReminder && daysRemaining !== null && (
+        <div className="bg-amber-50/95 backdrop-blur-sm border-b border-amber-200/60 shadow-sm relative z-40">
+          <div className="max-w-6xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-sm md:text-base">
+            
+            <div className="flex items-start sm:items-center gap-3">
+              <div className="bg-amber-100 p-2 rounded-full shrink-0 text-amber-600">
+                <Bell size={20} className="animate-pulse" />
+              </div>
+              <div>
+                <p className="text-slate-700">
+                  Jadwal <strong className="text-amber-800">{kbReminder.metode}</strong> Anda selanjutnya adalah{" "}
+                  {daysRemaining === 0 ? (
+                    <strong className="text-red-600 bg-red-50 px-2 py-0.5 rounded">HARI INI</strong>
+                  ) : (
+                    <strong className="text-amber-800">{daysRemaining} hari lagi</strong>
+                  )}
+                  {" "}pada tanggal <strong className="text-slate-800">{formatIndoDate(kbReminder.nextVisit)}</strong>.
+                </p>
+              </div>
+            </div>
+
+            <Link
+              href="/pengingat-kb"
+              className="shrink-0 bg-white hover:bg-amber-100 text-amber-700 border border-amber-200 px-4 py-1.5 rounded-full font-semibold transition-all shadow-sm text-sm"
+            >
+              Atur Ulang
+            </Link>
+            
+          </div>
+        </div>
+      )}
+
       {/* Hero Section */}
-      <header id="home" className="relative h-[80vh] flex items-center justify-center text-center px-4 overflow-hidden">
+      <header className="relative h-[80vh] flex items-center justify-center text-center px-4 overflow-hidden">
         <div className="absolute inset-0 bg-teal-900/80 z-10"></div>
+        {/* Hapus fallback di sini jika hero.webp selalu ada, atau pastikan public/hero.webp ada */}
         <Image 
           src="/hero.webp" 
           alt="Keluarga Sehat" 
@@ -84,14 +289,19 @@ export default function Home() {
         <div className={`relative z-20 text-white max-w-2xl transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
           <h1 className="text-4xl md:text-6xl font-bold mb-6">Edukasi Keluarga Berencana</h1>
           <p className="text-lg md:text-xl mb-8 opacity-90">Rencanakan keluarga sehat untuk masa depan yang lebih cerah secara terukur dan medis.</p>
-          <a href="/belajar" className="bg-teal-500 hover:bg-teal-400 text-white px-8 py-3 rounded-full font-semibold transition-all shadow-lg hover:shadow-xl">
-          Mulai Belajar
-          </a>
+          <div className="flex flex-wrap gap-4 justify-center">
+            <Link href="/belajar" className="bg-teal-500 hover:bg-teal-400 text-white px-8 py-3 rounded-full font-semibold transition-all shadow-lg hover:shadow-xl">
+              Mulai Belajar
+            </Link>
+            <Link href="/rekomendasi" className="bg-white/20 hover:bg-white text-white hover:text-teal-700 px-8 py-3 rounded-full font-semibold transition-all shadow-lg hover:shadow-xl border border-white">
+              Kalkulator KB Cerdas
+            </Link>
+          </div>
         </div>
       </header>
 
       {/* Edukasi Section */}
-      <section id="edukasi" className="max-w-6xl mx-auto px-4 py-20">
+      <section className="max-w-6xl mx-auto px-4 py-20">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl font-bold text-teal-700 mb-6">Apa Itu Keluarga Berencana?</h2>
           <p className="text-lg leading-relaxed text-slate-600">
@@ -115,7 +325,7 @@ export default function Home() {
       </section>
 
       {/* Filter / Kuis Section */}
-      <section id="metode" className="bg-slate-100 py-20">
+      <section className="bg-slate-100 py-20">
         <div className="max-w-6xl mx-auto px-4">
           <h2 className="text-3xl font-bold text-teal-700 text-center mb-10">Pilih KB yang Tepat</h2>
           
@@ -154,7 +364,7 @@ export default function Home() {
       </section>
 
       {/* Mitos vs Fakta */}
-      <section id="mitos" className="max-w-3xl mx-auto px-4 py-20">
+      <section className="max-w-3xl mx-auto px-4 py-20">
         <h2 className="text-3xl font-bold text-teal-700 text-center mb-10">Mitos vs Fakta</h2>
         <div className="space-y-4">
           {[
@@ -180,21 +390,26 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Tautan Artikel Relevan */}
-      <section className="max-w-6xl mx-auto px-4 py-10 border-t border-slate-200 text-center">
-        <h3 className="text-xl font-bold text-teal-700 mb-6">Pelajari Materi Relevan Lainnya:</h3>
-        <div className="flex flex-wrap justify-center gap-4">
-          <Link href="/reproduksi" className="px-6 py-2 bg-slate-100 text-teal-700 rounded-full hover:bg-teal-100 transition font-medium">
-            Kesehatan Reproduksi & Masa Subur
-          </Link>
-          <Link href="/peran-pasangan" className="px-6 py-2 bg-slate-100 text-teal-700 rounded-full hover:bg-teal-100 transition font-medium">
-            Peran Suami dalam KB
-          </Link>
+      <footer className="bg-slate-900 text-slate-400 py-8 mt-10">
+        <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="text-center md:text-left text-sm leading-relaxed">
+            <p className="font-semibold text-slate-300">© 2026 EduKB - Platform Edukasi Keluarga Berencana</p>
+            <p className="text-slate-500 mt-1">
+              Luaran Mata Kuliah Teknologi Tepat Guna Kebidanan <br className="md:hidden" />
+              <span className="hidden md:inline"> | </span> Poltekkes Kemenkes Surabaya
+            </p>
+          </div>
+          <button
+            onClick={handleFindMidwife}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-500 hover:bg-teal-400 text-white text-sm font-semibold shadow-lg transition-all disabled:opacity-70"
+            disabled={isLocating}
+          >
+            <MapPin size={18} />
+            {isLocating
+              ? "Mencari lokasi bidan terdekat..."
+              : "Cari Bidan Terdekat"}
+          </button>
         </div>
-      </section>
-
-      <footer className="bg-slate-900 text-slate-400 py-8 text-center">
-        <p>&copy; 2026 EduKB - Platform Edukasi Kesehatan Reproduksi</p>
       </footer>
     </div>
   );
