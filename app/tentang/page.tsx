@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowLeft, Target, Users, GraduationCap, Building2 } from "lucide-react";
+import PageHeader from "@/components/ui/PageHeader";
 
 const timPenyusun = [
   { nama: "Alif Novianda Sari", nim: "P27824224004" },
@@ -22,23 +23,11 @@ export default function TentangPage() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 pb-20 font-sans overflow-x-hidden">
       
-      <div className="bg-teal-700 text-white pt-10 pb-24 px-4 relative">
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-0 right-0 opacity-10 transform translate-x-1/3 -translate-y-1/4">
-            <Building2 size={300} />
-          </div>
-        </div>
-        
-        <div className="max-w-4xl mx-auto relative z-10">
-          <Link href="/" className="inline-flex items-center gap-2 text-teal-100 hover:text-white mb-8 transition">
-            <ArrowLeft size={20} /> Kembali ke Beranda
-          </Link>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Tentang Kami</h1>
-          <p className="text-lg text-teal-100 max-w-2xl">
-            Platform edukasi Keluarga Berencana (KB) sebagai luaran mata kuliah Teknologi Tepat Guna dalam Kebidanan.
-          </p>
-        </div>
-      </div>
+      <PageHeader 
+        title="Tentang Kami" 
+        description="Platform edukasi Keluarga Berencana (KB) sebagai luaran mata kuliah Teknologi Tepat Guna dalam Kebidanan." 
+        Icon={Building2} 
+      />
 
       <div className="max-w-4xl mx-auto px-4 -mt-16 relative z-20">
         
